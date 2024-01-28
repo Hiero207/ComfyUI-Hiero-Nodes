@@ -30,11 +30,10 @@ class PostViaWebhook:
     FUNCTION = "post_via_webhook"
     CATEGORY = "Hiero Nodes"
 
-    def post_via_webhook(self, images, URI, send_info, prompt, extra_pnginfo=None):
+    def post_via_webhook(self, images, URI, prompt, extra_pnginfo=None):
 
         temp_dir = tempfile.mkdtemp()
         parsed_uri = URI.replace("\\", "")
-        preview_file_path = ""
         wh = DiscordWebhook(url=parsed_uri, content="")
         counter = 0
 
