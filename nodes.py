@@ -7,7 +7,6 @@ from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 from discord_webhook import DiscordWebhook
 
-
 class PostViaWebhook:
     """Class is used to send images to a Discord channel using a Discord Webhook"""
 
@@ -52,7 +51,6 @@ class PostViaWebhook:
                 "tif": {"format": "TIFF"},
             }
             img.save(file_path, **img_params["png"], pnginfo=metadata)
-            preview_file_path = file_path
 
             with open(file_path, "rb") as f:
                 wh.add_file(file=f.read(), filename=file_name)
