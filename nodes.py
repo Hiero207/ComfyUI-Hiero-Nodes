@@ -4,6 +4,7 @@ import tempfile
 import shutil
 import json
 from datetime import datetime
+from pathlib import Path
 import numpy as np
 from PIL import Image
 from PIL.PngImagePlugin import PngInfo
@@ -15,12 +16,19 @@ class PostViaWebhook:
     @classmethod
     def INPUT_TYPES(cls):
         """Function sets up the inputs and outputs"""
+        comfy_path = Path.cwd()
+        settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
+        with open(settings_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+        data_dict = json.loads(data)
+        webhook_url = data_dict["webhook_url"]
+
         return {
             "required": {
                 "images": ("IMAGE",),
                 "URL": (
                     "STRING",
-                    {"default": "Discord Webhook URI", "multiline": False},
+                    {"default": webhook_url, "multiline": False},
                 ),
                 "enable": (["True", "False"],)
             },
@@ -34,6 +42,15 @@ class PostViaWebhook:
 
     def post_via_webhook(self, images, URL, enable, prompt):
         """Function for sending image to discord channel"""
+        comfy_path = Path.cwd()
+        settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
+        data = f'{{ "webhook_url": "{URL}" }}'
+        parsed_data = data.replace("\\", "")
+        #json_data = json.loads(parsed_data["webhook_url"])
+        
+        with open(settings_path, "w", encoding="utf-8") as file:
+            json.dump(parsed_data, file, indent=4)
+
         if enable == "True":
             temp_dir = tempfile.mkdtemp()
             parsed_uri = URL.replace("\\", "")
