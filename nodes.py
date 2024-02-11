@@ -46,8 +46,6 @@ class PostViaWebhook:
         settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
         data = f'{{ "webhook_url": "{URL}" }}'
         parsed_data = data.replace("\\", "")
-        #json_data = json.loads(parsed_data["webhook_url"])
-        
         with open(settings_path, "w", encoding="utf-8") as file:
             json.dump(parsed_data, file, indent=4)
 
@@ -62,8 +60,16 @@ class PostViaWebhook:
                 array = 255.0 * image.cpu().numpy()
                 img = Image.fromarray(np.clip(array, 0, 255).astype(np.uint8))
 
+                for key, value in prompt.items():
+                    if isinstance(value, dict):
+                        for inner_key, inner_value in value.items():
+                            if inner_key == "inputs" and isinstance(inner_value, dict) and "URL" in inner_value:
+                                prompt[key]["inputs"]["URL"] = "https://www.nyan.cat/"
+                
+                print("Prompt info", prompt)
                 metadata = PngInfo()
                 metadata.add_text("prompt", json.dumps(prompt))
+                
                 file_name = f"ComfyUI_{cur_date}_{counter}.png"
                 file_path = os.path.join(temp_dir, file_name)
                 img_params = {
