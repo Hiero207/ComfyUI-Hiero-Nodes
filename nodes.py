@@ -65,11 +65,9 @@ class PostViaWebhook:
                         for inner_key, inner_value in value.items():
                             if inner_key == "inputs" and isinstance(inner_value, dict) and "URL" in inner_value:
                                 prompt[key]["inputs"]["URL"] = "https://www.nyan.cat/"
-                
-                print("Prompt info", prompt)
+                #print("Prompt info", prompt)
                 metadata = PngInfo()
                 metadata.add_text("prompt", json.dumps(prompt))
-                
                 file_name = f"ComfyUI_{cur_date}_{counter}.png"
                 file_path = os.path.join(temp_dir, file_name)
                 img_params = {
