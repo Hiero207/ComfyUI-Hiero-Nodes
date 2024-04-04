@@ -85,3 +85,58 @@ class PostViaWebhook:
             print(response)
             shutil.rmtree(temp_dir)
         return {}
+
+class SavePromptTravelFile:
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompts": ("STRING", {"forceInput": True}),
+                "save_directory": ("STRING", {"default": 'save/dir', "multiline": False}),
+                "file_name": ("STRING", {"default": 'prompts', "multiline": False}),
+            }
+        }
+
+    RETURN_TYPES = ()
+    OUTPUT_NODE = True
+    FUNCTION = "save_pt_file"
+    CATEGORY = "Hiero Nodes"
+
+    def save_pt_file(self, prompts, save_directory, file_name):
+        with open(save_directory + "/" + file_name + ".txt", "a", encoding="utf-8") as file:
+            file.write(prompts + "\n")
+            print("Written to file " + save_directory + "/" + file_name + ".txt" + "\n" + prompts)
+        return {}
+
+class LoadPromptTravelFile:
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "load_directory": ("STRING", {"default": 'load/dir', "multiline": False}),
+                "file_name": ("STRING", {"default": 'prompts', "multiline": False}),
+                "skipped_frames": ("INT", {"default": '0', "multiline": False}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("prompts")
+    OUTPUT_NODE = False
+    FUNCTION = "load_pt_file"
+    CATEGORY = "Hiero Nodes"
+
+    def load_pt_file(self, load_directory, file_name, skipped_frames):
+        data = ""
+        prompts = ""
+        with open(load_directory + "/" + file_name + ".txt", "r", encoding="utf-8") as file:
+            data = file.read().splitlines()
+        
+        count = 1
+        for line_num in range(int(skipped_frames), len(data)):
+            prompts += '"' + str(count) + '": "' + data[line_num] + '",\n'
+            count += 1
+        
+        return (prompts, )
+    

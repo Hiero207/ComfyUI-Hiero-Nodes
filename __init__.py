@@ -2,7 +2,7 @@
 @author: Hiero
 @title: Hiero-Nodes
 @nickname: HNodes
-@version: 1.1
+@version: 1.2
 @project: "https://github.com/Hiero207/ComfyUI-Hiero-Nodes"
 @description: Just some nodes that I wanted/needed, so I made them.
 """
@@ -30,6 +30,8 @@ from .nodes import *
 NODE_CLASS_MAPPINGS = {
   # Add mappings here
     "Post to Discord w/ Webhook": PostViaWebhook,
+    "Save Prompt Travel file": SavePromptTravelFile,
+    "Load Prompt Travel file": LoadPromptTravelFile,
 }
 
 print("\033[34mComfyUI Hiero Nodes: \033[92mLoaded\033[0m")
