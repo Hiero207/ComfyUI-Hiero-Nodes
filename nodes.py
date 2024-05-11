@@ -17,11 +17,23 @@ class PostViaWebhook:
     def INPUT_TYPES(cls):
         """Function sets up the inputs and outputs"""
         comfy_path = Path.cwd()
-        settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
-        with open(settings_path, "r", encoding="utf-8") as file:
+        
+        cwd = comfy_path.parts[-1]
+        needed_dir = "ComfyUI"
+
+        if needed_dir!= cwd:
+            # Tack on ComfyUI to the end of the path
+            comfy_path = comfy_path / needed_dir
+            
+        settings_path = os.path.join(comfy_path, "custom_nodes", "ComfyUI-Hiero-Nodes", "settings.json")
+        #settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
+        with open(settings_path, "r") as file:
             data = json.load(file)
-        data_dict = json.loads(data)
-        webhook_url = data_dict["webhook_url"]
+        
+        if isinstance(data, str):
+            data = json.loads(data)
+        
+        webhook_url = data.get("webhook_url", "")
 
         return {
             "required": {
@@ -43,11 +55,19 @@ class PostViaWebhook:
     def post_via_webhook(self, images, URL, enable, prompt):
         """Function for sending image to discord channel"""
         comfy_path = Path.cwd()
-        settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
-        data = f'{{ "webhook_url": "{URL}" }}'
-        parsed_data = data.replace("\\", "")
-        with open(settings_path, "w", encoding="utf-8") as file:
-            json.dump(parsed_data, file, indent=4)
+        
+        cwd = comfy_path.parts[-1]
+        needed_dir = "ComfyUI"
+
+        if needed_dir!= cwd:
+            # Tack on ComfyUI to the end of the path
+            comfy_path = comfy_path / needed_dir
+        
+        settings_path = os.path.join(comfy_path, "custom_nodes", "ComfyUI-Hiero-Nodes", "settings.json")
+        #settings_path = comfy_path / "custom_nodes" / "ComfyUI-Hiero-Nodes" / "settings.json"
+        data = {"webhook_url": URL}
+        with open(settings_path, "w") as file:
+            json.dump(data, file, indent=4)
 
         if enable == "True":
             temp_dir = tempfile.mkdtemp()
@@ -104,7 +124,7 @@ class SavePromptTravelFile:
     CATEGORY = "Hiero Nodes"
 
     def save_pt_file(self, prompts, save_directory, file_name):
-        with open(save_directory + "/" + file_name + ".txt", "a", encoding="utf-8") as file:
+        with open(save_directory + "/" + file_name + ".txt", "a") as file:
             file.write(prompts + "\n")
             print("Written to file " + save_directory + "/" + file_name + ".txt" + "\n" + prompts)
         return {}
@@ -130,7 +150,7 @@ class LoadPromptTravelFile:
     def load_pt_file(self, load_directory, file_name, skipped_frames):
         data = ""
         prompts = ""
-        with open(load_directory + "/" + file_name + ".txt", "r", encoding="utf-8") as file:
+        with open(load_directory + "/" + file_name + ".txt", "r") as file:
             data = file.read().splitlines()
         
         count = 1
