@@ -10,12 +10,21 @@ from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 from discord_webhook import DiscordWebhook
 
+def count_frames(dir):
+    image_extensions = {".jpg", ".jpeg", ".png", ".gif", ".bmp"}
+    image_count = 0
+    
+    for filename in os.listdir(dir):
+        ext = os.path.splitext(filename)[1].lower()
+        if ext in image_extensions:
+            image_count += 1
+
+    return image_count
+
 class PostViaWebhook:
     """Class is used to send images to a Discord channel using a Discord Webhook"""
-
     @classmethod
     def INPUT_TYPES(cls):
-        """Function sets up the inputs and outputs"""
         comfy_path = Path.cwd()
         
         cwd = comfy_path.parts[-1]
@@ -107,7 +116,7 @@ class PostViaWebhook:
         return {}
 
 class SavePromptTravelFile:
-
+    """Class used to save generated prompts to a file for use"""
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -130,7 +139,7 @@ class SavePromptTravelFile:
         return {}
 
 class LoadPromptTravelFile:
-
+    """Class that loads the prompts.txt (or whatever it is named) file in for prompt traveling."""
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -159,4 +168,3 @@ class LoadPromptTravelFile:
             count += 1
         
         return (prompts, )
-    
