@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-hiero-nodes"
-description = "Nodes:Post to Discord w/ Webhook"
+description = "Random useful nodes I've devloped."
 version = "1.0.0"
 license = "LICENSE"
 dependencies = ["numpy", "Pillow", "discord-webhook"]
@@ -10,6 +10,6 @@ Repository = "https://github.com/Hiero207/ComfyUI-Hiero-Nodes"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "hiero"
 DisplayName = "ComfyUI-Hiero-Nodes"
 Icon = ""
